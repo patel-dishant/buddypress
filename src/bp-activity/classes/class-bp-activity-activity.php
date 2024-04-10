@@ -461,7 +461,7 @@ class BP_Activity_Activity {
 
 		$from_sql   = " FROM {$bp->activity->table_name} a";
 
-		$join_sql   = '';
+		$join_sql   = "LEFT JOIN {$bp->activity->table_name_meta} am on a.id = am.activity_id AND am.meta_key = 'date_modified_recorded'";
 
 		// Where conditions.
 		$where_conditions = array();
@@ -716,7 +716,7 @@ class BP_Activity_Activity {
 				$pag_sql = $wpdb->prepare( "LIMIT %d, %d", absint( ( $page - 1 ) * $per_page ), $per_page );
 
 				/** This filter is documented in bp-activity/bp-activity-classes.php */
-				$activity_sql = apply_filters( 'bp_activity_get_user_join_filter', "{$select_sql} {$from_sql} {$join_sql} {$where_sql} ORDER BY a.date_recorded {$sort}, a.id {$sort} {$pag_sql}", $select_sql, $from_sql, $where_sql, $sort, $pag_sql );
+				$activity_sql = apply_filters( 'bp_activity_get_user_join_filter', "{$select_sql} {$from_sql} {$join_sql} {$where_sql} ORDER BY am.meta_value {$sort}, a.date_recorded {$sort}, a.id {$sort} {$pag_sql}", $select_sql, $from_sql, $where_sql, $sort, $pag_sql );
 			} else {
 				$pag_sql = '';
 
@@ -760,7 +760,7 @@ class BP_Activity_Activity {
 
 		} elseif ( ! $only_get_count ) {
 			// Query first for activity IDs.
-			$activity_ids_sql = "{$select_sql} {$from_sql} {$join_sql} {$where_sql} ORDER BY {$order_by} {$sort}, a.id {$sort}";
+			$activity_ids_sql = "{$select_sql} {$from_sql} {$join_sql} {$where_sql} ORDER BY am.meta_value {$sort}, {$order_by} {$sort}, a.id {$sort}";
 
 			if ( ! empty( $per_page ) && ! empty( $page ) ) {
 				// We query for $per_page + 1 items in order to

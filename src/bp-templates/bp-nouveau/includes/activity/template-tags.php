@@ -222,6 +222,8 @@ function bp_nouveau_activity_timestamp() {
 	 * @return integer The Activity timestamp.
 	 */
 	function bp_nouveau_get_activity_timestamp() {
+		global $activities_template;
+		
 		/**
 		 * Filter here to edit the activity timestamp.
 		 *
@@ -229,7 +231,15 @@ function bp_nouveau_activity_timestamp() {
 		 *
 		 * @param integer $value The Activity timestamp.
 		 */
-		return apply_filters( 'bp_nouveau_get_activity_timestamp', strtotime( bp_get_activity_date_recorded() ) );
+		 
+		$activity_timestamp = bp_get_activity_date_recorded(); 
+		
+		$date_modified_recorded = bp_activity_get_meta( $activities_template->activity->id, 'date_modified_recorded' );
+		if (  $date_modified_recorded != '' ) {
+			$activity_timestamp = $date_modified_recorded;
+		}
+		
+		return apply_filters( 'bp_nouveau_get_activity_timestamp', strtotime( $activity_timestamp ) );
 	}
 
 /**

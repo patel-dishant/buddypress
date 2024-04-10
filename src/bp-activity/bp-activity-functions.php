@@ -1124,6 +1124,9 @@ function bp_activity_add_user_favorite( $activity_id, $user_id = 0 ) {
 
 	// Update activity meta counts.
 	if ( bp_activity_update_meta( $activity_id, 'favorite_count', $fav_count ) ) {
+		
+		// update activity modified date.
+		bp_activity_update_meta( $activity_id, 'date_modified_recorded', bp_core_current_time() );
 
 		/**
 		 * Fires if bp_activity_update_meta() for favorite_count is successful and before returning a true value for success.
@@ -2883,6 +2886,11 @@ function bp_activity_new_comment( $args = '' ) {
 		'hide_sitewide'     => $is_hidden,
 		'error_type'        => $r['error_type']
 	) );
+	
+	if ( true === $comment_id || !is_wp_error( $comment_id ) ) {
+		// update parent activity modified date.
+		bp_activity_update_meta( $activity_id, 'date_modified_recorded', bp_core_current_time() );
+	}
 
 	// Bail on failure.
 	if ( false === $comment_id || is_wp_error( $comment_id ) ) {
